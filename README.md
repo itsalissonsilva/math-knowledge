@@ -2,11 +2,13 @@
 
 A knowledge graph of mathematics based on Wikipedia, connecting foundations, branches, concepts, formulas, and source articles.
 
+This interactive map of mathematics is built for mental clarity and coherence. It places individual ideas within a larger structure, making it easier to see how concepts fit together, trace connections across fields, and move from the foundations toward more specialized topics.
+
 **[Explore the live graph](https://math-knowledge.org/)**
 
 ## Demo
 
-An 18-second walkthrough: see the full graph, unfold a branch, follow its subbranches, and double-click the centered concept to open its note and Wikipedia source.
+Navigate the map of mathematics to see how its ideas connect. Start with the full graph, unfold a branch, and follow its subbranches into deeper concepts. Double-click the centered node to read its definition, formulas, and Wikipedia source.
 
 https://github.com/user-attachments/assets/ff6f5063-fbee-436b-b0c9-14229c17c69a
 
@@ -34,6 +36,7 @@ The interface stays focused on the graph: breadcrumbs, search, optional notes, a
 
 | Action | Result |
 | --- | --- |
+| Click `math-knowledge.org` in the header | Open the GitHub repository |
 | Click a branch | Center the concept and reveal its next level |
 | Double-click the centered node | Open its note and Wikipedia source |
 | Click the centered node, Shift-click, or use the book icon | Read the concept's note |
@@ -46,6 +49,12 @@ The interface stays focused on the graph: breadcrumbs, search, optional notes, a
 | Press `Escape` | Close notes or dialogs |
 
 Browser navigation preserves the exploration path. Reduced-motion preferences skip the camera and branch-growth animations.
+
+## Contributing
+
+Contributions are welcome: improve mathematical explanations, add missing concepts and connections, correct formulas, or refine the interface and accessibility. Include the relevant Wikipedia sources and formula assumptions when changing mathematical content.
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the development workflow, content guidelines, validation steps, and pull request instructions.
 
 ## Run locally
 
