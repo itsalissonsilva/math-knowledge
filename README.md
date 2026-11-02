@@ -1,8 +1,6 @@
 # math-knowledge
 
-A knowledge graph of mathematics based on Wikipedia, connecting foundations, branches, concepts, formulas, and source articles.
-
-This interactive map of mathematics is built for mental clarity and coherence. It places individual ideas within a larger structure, making it easier to see how concepts fit together, trace connections across fields, and move from the foundations toward more specialized topics.
+A knowledge graph of mathematics based on Wikipedia, connecting foundations, branches, concepts, formulas, and source articles. This interactive map of mathematics is built for mental clarity and coherence. It places individual ideas within a larger structure, making it easier to see how concepts fit together, trace connections across fields, and move from the foundations toward more specialized topics.
 
 **[Explore the live graph](https://math-knowledge.org/)**
 
