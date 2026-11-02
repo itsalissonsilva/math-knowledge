@@ -126,8 +126,8 @@ export default function ExplorerGraph({focusId,onSelect,onRead,readingId,request
           if(active&&motion==='focusing')return null;
           const a=project(scene.nodes.get(edge.source)!.position,camera),b=project(scene.nodes.get(edge.target)!.position,camera),progress=active&&motion==='sprouting'?branchProgress(bloom,edge.index):1;
           if(Math.max(a.x,b.x)<-size.width/2-400||Math.min(a.x,b.x)>size.width/2+400||Math.max(a.y,b.y)<-size.height/2-400||Math.min(a.y,b.y)>size.height/2+400)return null;
-          const parent=getDiveNode(scene.nodes.get(edge.source)!.id)!,color=colors[parent.domain]??colors.foundations;
-          return <path key={edge.source+edge.target} d={spiralCurve(a,b,progress,edge.trunk?16:active?(scene.nodes.get(edge.source)!.root?20:9):5).path} className={active?'active-spiral':edge.trunk?'root-spiral':'context-spiral'} style={{stroke:color,opacity:active?1:isOverview?edge.trunk?0.85:0.55:.16}}/>;
+          const owner=getDiveNode(scene.nodes.get(edge.trunk?edge.target:edge.source)!.id)!,color=colors[owner.domain]??colors.foundations;
+          return <path key={edge.source+edge.target} data-branch-domain={owner.domain} d={spiralCurve(a,b,progress,edge.trunk?16:active?(scene.nodes.get(edge.source)!.root?20:9):5).path} className={active?'active-spiral':edge.trunk?'root-spiral':'context-spiral'} style={{stroke:color,opacity:active?1:isOverview?edge.trunk?0.85:0.55:.16}}/>;
         })}
       </svg>
       <div className="spiral-nodes">{visibleNodes.map(point=>{
