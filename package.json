@@ -1,5 +1,5 @@
 {
-  "name": "mapofmathematics",
+  "name": "math-knowledge",
   "version": "2.0.0",
   "private": true,
   "type": "module",
@@ -24,5 +24,11 @@
     "@vitejs/plugin-react": "6.1.2",
     "typescript": "7.0.2",
     "vite": "8.3.5"
+  },
+  "description": "A knowledge graph of mathematics based on Wikipedia, with interactive branching concepts, formulas, and source notes.",
+  "homepage": "https://math-knowledge.org",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/itsalissonsilva/math-knowledge.git"
   }
 }
