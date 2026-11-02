@@ -44,13 +44,13 @@ function Notes({id,onClose,onNavigate,onConnections}:{id:string;onClose:()=>void
 export default function AtlasApp(){
   const[focusId,setFocusId]=useState(routeId),[readingId,setReadingId]=useState<string|null>(null);
   const[trailIds,setTrailIds]=useState(()=>diveAncestors(routeId()).map(node=>node.id));
-  const[theme,setTheme]=useState(document.documentElement.dataset.theme==='dark'?'dark':'light');
+  const[theme,setTheme]=useState(document.documentElement.dataset.theme==='light'?'light':'dark');
   const[graphRequest,setGraphRequest]=useState<GraphRequest>(()=>({id:routeId(),kind:routeId()==='mathematics'?'home':'reveal',serial:0}));
   const[searchOpen,setSearchOpen]=useState(false),[guide,setGuide]=useState(false),[query,setQuery]=useState(''),[limit,setLimit]=useState(40);
   const searchInput=useRef<HTMLInputElement>(null),dialog=useRef<HTMLElement>(null),lastFocus=useRef<HTMLElement|null>(null);
   const focus=getDiveNode(focusId)!,trail=trailIds.slice(1).map(id=>getDiveNode(id)!).filter(Boolean),results=useMemo(()=>search(query),[query]);
   const sources=[...new Map(sourceOutlines.map(source=>[source.article,source])).values()];
-  useEffect(()=>{document.documentElement.dataset.theme=theme;try{localStorage.setItem('mom-theme',theme);}catch{}},[theme]);
+  useEffect(()=>{document.documentElement.dataset.theme=theme;document.querySelector('meta[name="theme-color"]')?.setAttribute('content',theme==='dark'?'#1b211c':'#fafbf7');try{localStorage.setItem('mom-theme',theme);}catch{}},[theme]);
   useEffect(()=>{const pop=()=>{const id=routeId(),stored=history.state?.mathTrail,path=Array.isArray(stored)&&stored.every((part:string)=>!!getDiveNode(part))?stored:diveAncestors(id).map(node=>node.id);setFocusId(id);setTrailIds(path);setReadingId(null);setGraphRequest(current=>({id,kind:'reveal',path,serial:current.serial+1}));setSearchOpen(false);};window.addEventListener('popstate',pop);window.addEventListener('hashchange',pop);return()=>{window.removeEventListener('popstate',pop);window.removeEventListener('hashchange',pop);};},[]);
   useEffect(()=>{const keys=(event:KeyboardEvent)=>{if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==='k'){event.preventDefault();setSearchOpen(v=>!v);setGuide(false);}if(event.key==='Escape'){setSearchOpen(false);setGuide(false);setReadingId(null);}};window.addEventListener('keydown',keys);return()=>window.removeEventListener('keydown',keys);},[]);
   useEffect(()=>{
