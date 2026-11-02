@@ -17,6 +17,8 @@ export default function ExplorerGraph({focusId,onSelect,onRead,readingId,request
   const latest=useRef({scene,stages,activePath,camera,motion,size});latest.current={scene,stages,activePath,camera,motion,size};
   const animation=useRef<number|null>(null),generation=useRef(0),suppressClick=useRef(0);
   function stop(){generation.current++;if(animation.current!==null)cancelAnimationFrame(animation.current);animation.current=null;}
+  // Opening notes resizes the canvas before the second click can arrive.
+  function readNote(id:string){suppressClick.current=Date.now()+500;onRead(id);}
   function overviewCamera(nodes=latest.current.scene.nodes):Camera{
     const points=[...nodes.values()].map(node=>node.position),rect=viewport.current?.getBoundingClientRect()??latest.current.size;
     const minX=Math.min(...points.map(point=>point.x)),maxX=Math.max(...points.map(point=>point.x)),minY=Math.min(...points.map(point=>point.y)),maxY=Math.max(...points.map(point=>point.y));
@@ -37,7 +39,7 @@ export default function ExplorerGraph({focusId,onSelect,onRead,readingId,request
     stop();const token=generation.current,start=latest.current.camera,count=diveChildren(id).length,target=centeredCamera(point.position,point.unit,count,rect.width,rect.height);
     setStages(nextStages);setActivePath(path);setBloom(0);setMotion('focusing');onSelect(id,path);
     const reduced=window.matchMedia('(prefers-reduced-motion:reduce)').matches;
-    if(reduced){setCamera(target);setBloom(Infinity);setMotion('settled');if(readAfter||!count)onRead(id);return;}
+    if(reduced){setCamera(target);setBloom(Infinity);setMotion('settled');if(readAfter||!count)readNote(id);return;}
     const begin=performance.now();
     const tick=(now:number)=>{
       if(token!==generation.current)return;
@@ -45,7 +47,7 @@ export default function ExplorerGraph({focusId,onSelect,onRead,readingId,request
       setCamera(frame.focus<1?cameraBetween(start,target,frame.focus):target);
       setMotion(frame.phase);setBloom(frame.bloom);
       if(frame.phase!=='settled')animation.current=requestAnimationFrame(tick);
-      else {animation.current=null;if(readAfter||!count)onRead(id);}
+      else {animation.current=null;if(readAfter||!count)readNote(id);}
     };
     animation.current=requestAnimationFrame(tick);
   }
@@ -118,7 +120,7 @@ export default function ExplorerGraph({focusId,onSelect,onRead,readingId,request
     return Math.abs(screen.x)<size.width/2+240&&Math.abs(screen.y)<size.height/2+200;
   });
   return <div className="explorer-graph" aria-label="Mathematics spiral explorer" data-motion={motion} data-focused-node={activePath[activePath.length-1]}>
-    <div ref={viewport} className={'infinite-canvas '+(dragging?'is-dragging':'')} role="region" aria-label="Pan and zoom mathematics canvas" tabIndex={0} onPointerDown={down} onPointerMove={move} onPointerUp={finish} onPointerCancel={finish} onDoubleClick={event=>{if(!(event.target as HTMLElement).closest('button'))fitMap();}} onKeyDown={event=>{if(event.target!==event.currentTarget)return;if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(event.key)){event.preventDefault();manual();setCamera(current=>({...current,center:{x:current.center.x+(event.key==='ArrowLeft'?-45:event.key==='ArrowRight'?45:0)/current.zoom,y:current.center.y+(event.key==='ArrowUp'?-45:event.key==='ArrowDown'?45:0)/current.zoom}}));}if(event.key==='+'||event.key==='=')zoomAt(1.25);if(event.key==='-')zoomAt(.8);if(event.key==='0')fitMap();}}>
+    <div ref={viewport} className={'infinite-canvas '+(dragging?'is-dragging':'')} role="region" aria-label="Pan and zoom mathematics canvas" tabIndex={0} onPointerDown={down} onPointerMove={move} onPointerUp={finish} onPointerCancel={finish} onDoubleClick={event=>{if(suppressClick.current<=Date.now()&&!(event.target as HTMLElement).closest('button'))fitMap();}} onKeyDown={event=>{if(event.target!==event.currentTarget)return;if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(event.key)){event.preventDefault();manual();setCamera(current=>({...current,center:{x:current.center.x+(event.key==='ArrowLeft'?-45:event.key==='ArrowRight'?45:0)/current.zoom,y:current.center.y+(event.key==='ArrowUp'?-45:event.key==='ArrowDown'?45:0)/current.zoom}}));}if(event.key==='+'||event.key==='=')zoomAt(1.25);if(event.key==='-')zoomAt(.8);if(event.key==='0')fitMap();}}>
       <svg className="spiral-lines" width={size.width} height={size.height} viewBox={(-size.width/2)+' '+(-size.height/2)+' '+size.width+' '+size.height} aria-hidden="true">
         {scene.edges.map(edge=>{
           const active=edge.stage===activeKey&&!isOverview,ancestor=ancestry.has(edge.target)||edge.target===activeKey;
@@ -137,7 +139,7 @@ export default function ExplorerGraph({focusId,onSelect,onRead,readingId,request
         const formula=detail?node.formulas[0]:undefined,above=!center&&(child?screen.y<=10:point.position.y<0),width=compact?(child&&activeCount===5?120:center?180:root?120:145):center?290:root&&!detail?210:250;
         const opacity=child?Math.min(1,Math.max(0,(progress-.6)/.4)):context?0.16:1;
         return <div className={'spiral-node '+(center?'center-node ':'')+(root?'major-node ':'')+(detail?'detail-node ':'')+(above?'label-above ':'')+(context?'archived-node':'')} key={point.key} data-node-id={point.id} data-node-role={center?'center':child?'branch':'context'} style={{left:'calc(50% + '+screen.x+'px)',top:'calc(50% + '+screen.y+'px)','--node-color':colors[node.domain]??colors.foundations,'--node-width':width+'px',opacity} as CSSProperties} aria-hidden={!ready||context?true:undefined}>
-          <button className="spiral-node-button" tabIndex={ready&&!context?0:-1} aria-label={(center?'Read notes: ':'Explore: ')+node.title} title={node.title} onClick={event=>{if(!ready||suppressClick.current>Date.now())return;if(center&&motion==='settled'){onRead(point.id);return;}dive(point.id,point.path,event.shiftKey);}}>
+          <button className="spiral-node-button" tabIndex={ready&&!context?0:-1} aria-label={(center?'Read notes: ':'Explore: ')+node.title} title={node.title} onClick={event=>{if(!ready||suppressClick.current>Date.now())return;if(center&&motion==='settled'){readNote(point.id);return;}dive(point.id,point.path,event.shiftKey);}}>
             <span className="spiral-orb">{root&&<span>{symbols[point.id]}</span>}</span>
             {showLabel&&<span className="spiral-label"><span className="spiral-title">{node.title}</span>{formula&&<span className="spiral-formula" role="math"><MathExpression formula={formula} compact/></span>}</span>}
           </button>
