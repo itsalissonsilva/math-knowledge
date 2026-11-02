@@ -91,7 +91,7 @@ A reference or classification is not automatically a prerequisite. Some topics n
 
 Reviewed formulas include their mathematical assumptions and, where available, examples. Additional source-selected equations retain their Wikipedia section and revision context; use the linked article for notation and hypotheses. KaTeX converts source notation into native MathML during indexing, so formulas render without an external math service.
 
-Wikipedia introductions are quoted in excerpts of at most 20 words, with source links and attribution under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). The source snapshot retains article/page identifiers and available revision identifiers. Reviewed explanations, examples, and learning bridges are original annotations.
+Wikipedia introductions use complete-sentence excerpts, with source links and attribution under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). Definitions finish naturally instead of being cut off at a fixed word count. The source snapshot retains article/page identifiers and available revision identifiers. Reviewed explanations, examples, and learning bridges are original annotations.
 
 ## Rebuild the index
 

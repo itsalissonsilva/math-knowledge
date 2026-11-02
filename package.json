@@ -9,7 +9,8 @@
     "preview": "vite preview --host 127.0.0.1 --port 3002 --strictPort",
     "test": "node --experimental-strip-types --test tests/*.test.ts",
     "index:wikipedia": "node --experimental-strip-types scripts/build-wikipedia.mjs",
-    "index:learning": "node --experimental-strip-types scripts/build-learning-index.mjs"
+    "index:learning": "node --experimental-strip-types scripts/build-learning-index.mjs",
+    "index:descriptions": "node scripts/refresh-descriptions.mjs"
   },
   "dependencies": {
     "@types/katex": "0.16.8",

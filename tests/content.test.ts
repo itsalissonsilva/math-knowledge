@@ -46,6 +46,20 @@ test('deep subjects, annotated formulas, source excerpts, and search remain avai
   assert.deepEqual(atlas.search('notamathematicalconceptrandomxyz'),[]);
   assert.ok(atlas.concepts.filter(node=>node.formulas.length).length>=4500,'Source equation coverage must remain substantial.');
   for(const node of atlas.concepts)for(const formula of node.formulas)assert.ok(formula.condition,node.id+': missing formula conditions');
-  for(const page of atlas.sourcePages)assert.ok(page.excerpt.trim().split(/\s+/).length<=20);
+  for(const page of atlas.sourcePages){
+    assert.ok(/[.!?][\u201d"')\]]*$/.test(page.excerpt),page.title+': excerpt must finish a sentence');
+    assert.ok(!/(?:…|\.{2,})[\u201d"')\]]*$/.test(page.excerpt),page.title+': excerpt must not be cut off');
+  }
   assert.ok(atlas.sourceOutlines.every(source=>source.status==='read'),'Every selected subject source must resolve.');
+});
+
+test('every concept description is complete and the reported TAG note has no dangling clause',()=>{
+  for(const node of atlas.concepts){
+    assert.ok(/[.!?][\u201d"')\]]*$/.test(node.summary),node.title+': incomplete description');
+    assert.ok(!/(?:…|\.{2,})[\u201d"')\]]*$/.test(node.summary),node.title+': truncated description');
+    assert.ok(!/\{\{[a-z]|\[\[[a-z][^\[\]]*\||\uE000|\uE001/i.test(node.summary),node.title+': source markup leaked into the description');
+  }
+  const tag=atlas.byId['wp-topological-abelian-group'];
+  assert.equal(tag.summary,'In mathematics, a topological abelian group, or TAG, is a topological group that is also an abelian group.');
+  assert.ok(atlas.concepts.some(node=>node.origin==='wikipedia'&&node.summary.split(/\s+/).length>20),'A long definition must finish rather than stop at a word budget.');
 });

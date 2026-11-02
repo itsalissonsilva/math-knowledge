@@ -54,7 +54,7 @@ Follow the existing style and keep the change focused. Avoid unrelated formattin
 - Use meaningful mathematical branches. Prefer deeper, coherent organization to alphabetic ranges or generic overflow nodes.
 - Keep the foundations core and eight outer areas. Main areas may have up to five choices; deeper subjects have at most four. Natural leaves and smaller branches are valid.
 - Preserve concept reachability when moving topics. Check that a change does not introduce navigation cycles or orphaned concepts.
-- Preserve Wikipedia attribution and CC BY-SA links. Source introduction excerpts are limited to 20 words per article; write original explanatory annotations rather than copying long passages.
+- Preserve Wikipedia attribution and CC BY-SA links. Use a complete introductory sentence, preserving inline mathematical notation. Never truncate a definition at a word count, append an ellipsis, or hide an unfinished clause by adding a period. Write original explanatory annotations for additional context.
 
 ## Generated data
 
@@ -72,6 +72,14 @@ The first command reads Wikipedia and populates a temporary cache. It can take t
 ```sh
 npm run index:learning -- /absolute/path/to/mapofmathematics-wikipedia-read-cache
 ```
+
+To refresh only the descriptions from those cached article revisions, preserving all concepts, branches, references, and formulas:
+
+```sh
+npm run index:descriptions -- /absolute/path/to/mapofmathematics-wikipedia-read-cache
+```
+
+This offline pass uses the same sentence extraction as the full importer and stops for review if a source cannot supply a complete description.
 
 Interface and documentation changes generally do not require rebuilding the data. A reviewed formula change should include its updated generated MathML when applicable.
 

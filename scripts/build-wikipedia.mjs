@@ -3,6 +3,7 @@ import os from 'node:os';
 import path from 'node:path';
 import {createHash} from 'node:crypto';
 import { catalog } from '../src/catalog.ts';
+import {pageExcerpt,stripTemplates,excerptLicense} from './wikipedia-excerpts.mjs';
 
 const API = 'https://en.wikipedia.org/w/api.php';
 const headers = { 'User-Agent':'MapOfMathematics/2.0 (local educational mathematics atlas; read-only Wikipedia indexing)' };
@@ -43,13 +44,6 @@ async function query(params) {
 }
 async function concurrent(list,fn,count=1) {
   let cursor=0; await Promise.all(Array.from({length:count},async()=>{while(cursor<list.length){ const index=cursor++; await fn(list[index],index); }}));
-}
-function stripTemplates(text) {
-  let depth=0,out=''; for(let i=0;i<text.length;i++) {
-    if(text.slice(i,i+2)==='{{'){depth++;i++;continue;}
-    if(depth&&text.slice(i,i+2)==='}}'){depth--;i++;continue;}
-    if(!depth)out+=text[i];
-  } return out.replace(/<ref\b[^>]*>[\s\S]*?<\/ref>/gi,'').replace(/<!--[\s\S]*?-->/g,'');
 }
 const entries = catalog.map(n=>({...n,origin:'curated'}));
 const byId = new Map(entries.map(n=>[n.id,n]));
@@ -107,11 +101,6 @@ await concurrent(sources,async([article,parentId])=>{
 console.log(`Outline pass: ${entries.length} concepts. Resolving article identities and body links…`);
 const titles=[...new Map(entries.map(n=>[normalize(n.wiki),decode(n.wiki.replaceAll('_',' '))])).values()];
 const pages=new Map(),canonical=new Map(),missing=new Set(),disambiguations=new Set();
-function plainIntro(body){
-  const cleaned=body.replace(/\{\|[\s\S]*?\|\}/g,'').replace(/<ref\b[^>]*\/>/gi,'').replace(/<math\b[^>]*>[\s\S]*?<\/math>/gi,'').replace(/<[^>]+>/g,'');
-  const paragraph=cleaned.split(/\n\s*\n/).map(s=>s.trim()).find(s=>s.length>60&&!/^(?:\[\[(?:File|Image)|[*#;:{|}=])/i.test(s))??'';
-  return paragraph.replace(/\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g,(_,a,b)=>b||a).replace(/\[https?:[^\s\]]+\s*([^\]]*)\]/g,'$1').replace(/'{2,5}/g,'').replace(/&nbsp;/g,' ').replace(/&[^;]+;/g,' ').replace(/\s+/g,' ').trim();
-}
 function ingest(response){
   for(const item of response.query?.normalized??[])canonical.set(normalize(item.from),normalize(item.to));
   for(const item of response.query?.redirects??[])canonical.set(normalize(item.from),normalize(item.to));
@@ -120,9 +109,8 @@ function ingest(response){
     if(page.pageprops&&'disambiguation'in page.pageprops)disambiguations.add(normalize(page.title));
     const rawText=page.revisions?.[0]?.slots?.main?.content??'';
     const categories=[...rawText.matchAll(/\[\[Category:([^\]|]+)(?:\|[^\]]*)?\]\]/g)].map(m=>m[1]);
-    const body=stripTemplates(rawText).split(/\n==\s*(References|Notes|Bibliography|External links)/i)[0];
-    const words=(page.extract||plainIntro(body)).trim().split(/\s+/);
-    const excerpt=words.slice(0,20).join(' ')+(words.length>20?'…':'');
+    const body=stripTemplates(rawText).replace(/<ref\b[^>]*>[\s\S]*?<\/ref>/gi,'').replace(/<!--[\s\S]*?-->/g,'').split(/\n==\s*(References|Notes|Bibliography|External links)/i)[0];
+    const excerpt=pageExcerpt(page);
     const links=[...body.matchAll(/\[\[([^\]|#]+)(?:#[^\]|]*)?(?:\|[^\]]*)?\]\]/g)].map(m=>normalize(m[1])).filter(s=>!s.includes(':'));
     const introLinks=[...body.split(/\n==/)[0].matchAll(/\[\[([^\]|#]+)(?:#[^\]|]*)?(?:\|[^\]]*)?\]\]/g)].map(m=>normalize(m[1])).filter(s=>!s.includes(':'));
     if(!pages.has(normalize(page.title))||page.extract)pages.set(normalize(page.title),{title:page.title,pageid:page.pageid,revision:page.lastrevid??page.revisions?.[0]?.revid,url:page.canonicalurl||`https://en.wikipedia.org/wiki/${encodeURIComponent(page.title.replaceAll(' ','_'))}`,excerpt,categories,introLinks,links:[...new Set(links)]});
@@ -145,6 +133,7 @@ for(const n of entries){
   const key=resolve(normalize(n.wiki)),page=pages.get(key);
   const biography=page&&/\b(?:was|is) an? (?:[\w-]+ ){0,3}(?:mathematician|physicist|statistician|logician|professor|computer scientist)\b/i.test(page.excerpt);
   const irrelevantCategory=page?.categories?.some(c=>/software|programming languages|computer libraries|spreadsheet|\bbirths$|\bdeaths$|living people|\bmathematicians$|\bstatisticians$|\bphysicists$/i.test(c));
+  if(n.origin==='wikipedia'&&page&&!page.excerpt&&!disambiguations.has(key)&&!irrelevantCategory&&!offTopic.has(page.title))throw new Error('No complete introduction sentence for '+page.title);
   if((!page||disambiguations.has(key)||!page.excerpt||biography||irrelevantCategory||offTopic.has(page.title))&&n.origin==='wikipedia'){removed.add(n.id);continue;}
   if(page){n.wiki=page.title.replaceAll(' ','_');n.pageId=page.pageid;n.sourceTitle=page.title;if(n.origin==='wikipedia'){n.summary=page.excerpt;n.title=page.title;}}
 }
@@ -241,7 +230,7 @@ const pageRows=[...pages.values()].filter(page=>usedPages.has(page.pageid)).map(
 const indices=new Map(valid.map((n,i)=>[n.id,i]));
 const compactLinks=[...classification.filter(e=>validIds.has(e.source)&&validIds.has(e.target)&&e.source!==e.target).map(e=>[indices.get(e.source),indices.get(e.target),1,e.sourceArticle]),...links.map(e=>[indices.get(e.source),indices.get(e.target),0])];
 const uniqueSources=[...new Map(sourceResults.map(s=>[`${s.article}:${s.parentId}`,s])).values()];
-const result={generatedAt:new Date().toISOString(),license:'Wikipedia text excerpts: CC BY-SA 4.0. Each excerpt is at most 20 words; see the linked article and its revision history.',sources:uniqueSources,pages:pageRows,entries:valid,links:compactLinks};
+const result={generatedAt:new Date().toISOString(),license:excerptLicense,sources:uniqueSources,pages:pageRows,entries:valid,links:compactLinks};
 await fs.writeFile(new URL('../public/wikipedia-catalog.json',import.meta.url),JSON.stringify(result));
 await fs.writeFile(new URL('../wikipedia-coverage.json',import.meta.url),JSON.stringify({generatedAt:result.generatedAt,concepts:valid.length,articleReferences:links.length,verifiedPages:pages.size,includedMathPages:pageRows.length,removedRedlinks:removed.size,repairedRedirectCycles:repairedCycles,sources:uniqueSources,missing:[...missing],disambiguations:[...disambiguations]},null,2));
 console.log(JSON.stringify({concepts:valid.length,references:links.length,verifiedPages:pages.size,removedRedlinks:removed.size,sourcesRead:sourceResults.filter(s=>s.status==='read').length}));
