@@ -1,0 +1,45 @@
+.spiral-lines {position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.spiral-lines>path {fill:none;stroke-width:2px;stroke-linecap:round;stroke-linejoin:round}
+.spiral-lines>path.root-spiral {stroke-width:2.4px}
+.spiral-lines>path.context-spiral {stroke-width:1.3px}
+.spiral-nodes {position:absolute;inset:0;pointer-events:none}
+.spiral-node {position:absolute;width:var(--node-width);--circle-size:8px;transform:translate(-50%,calc(-.5 * var(--circle-size)));pointer-events:none;transition:opacity .2s,transform .5s}
+.spiral-node-button {position:relative;display:flex;flex-direction:column;align-items:center;width:100%;min-height:var(--circle-size);pointer-events:auto;outline-offset:7px}
+.spiral-orb {width:var(--circle-size);height:var(--circle-size);border:1.5px solid var(--node-color);border-radius:50%;background:var(--canvas);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:width .5s,height .5s,box-shadow .4s}
+.spiral-orb>span {font:17px 'Cambria Math',Cambria,Georgia,serif;color:var(--node-color)}
+.major-node {--circle-size:26px}
+.major-node[data-node-id=foundations] {--circle-size:32px}
+.center-node {--circle-size:18px}
+.spiral-node.center-node.major-node {--circle-size:40px}
+.center-node .spiral-orb {background:color-mix(in srgb,var(--node-color) 12%,var(--canvas));box-shadow:0 0 0 5px color-mix(in srgb,var(--node-color) 10%,transparent)}
+.center-node:not(.major-node) .spiral-orb {background:var(--node-color)}
+.center-node .spiral-orb>span {font-size:24px}
+.spiral-label {display:flex;align-items:center;flex-direction:column;gap:8px;width:100%;margin-top:12px}
+.label-above .spiral-label {position:absolute;bottom:calc(100% + 13px);left:0;margin:0}
+.spiral-title {font:20px/1.25 Georgia,'Times New Roman',serif;letter-spacing:-.2px;color:var(--ink);background:var(--canvas);padding:0 4px;max-width:100%;text-wrap:balance;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.spiral-formula {font:16px/1.5 'Cambria Math',Cambria,Georgia,serif;color:var(--muted);padding:0 5px;background:var(--canvas);max-width:100%;overflow-wrap:anywhere}
+.math-expression {display:inline-block;max-width:100%}
+.math-expression.typeset-math {display:block;width:100%;text-align:center}
+.typeset-math>span {display:inline-block;vertical-align:middle;max-width:none;white-space:nowrap}
+.typeset-math math {font-family:'Cambria Math','STIX Two Math',math;math-style:compact;max-width:none}
+.spiral-formula:has(.typeset-math) {width:100%;min-height:1.5em}
+.note-formula .math-expression {width:100%;overflow-x:auto;scrollbar-width:thin}
+.major-node:not(.detail-node) .spiral-title {font-size:15px}
+.major-node[data-node-id=foundations]:not(.detail-node) .spiral-title {font-size:18px}
+.center-node .spiral-title {font-size:27px;color:var(--node-color)}
+.center-node .spiral-formula {font-size:17px}
+.center-node .spiral-title,.center-node .spiral-formula {background:transparent;text-shadow:-2px -2px 0 var(--canvas),2px -2px 0 var(--canvas),-2px 2px 0 var(--canvas),2px 2px 0 var(--canvas),0 -2px 0 var(--canvas),0 2px 0 var(--canvas),-2px 0 0 var(--canvas),2px 0 0 var(--canvas)}
+.spiral-node-button:hover .spiral-title {color:var(--node-color)}
+.spiral-node-button:hover .spiral-orb {box-shadow:0 0 0 5px color-mix(in srgb,var(--node-color) 12%,transparent)}
+.archived-node .spiral-node-button {pointer-events:none}
+@media(max-width:600px) {
+  .spiral-title {font-size:16px}
+  .spiral-formula {font-size:12px;line-height:1.5}
+  .center-node .spiral-title {font-size:24px}
+  .center-node .spiral-formula {font-size:14px}
+  .major-node:not(.detail-node) .spiral-title {font-size:13px}
+  .major-node[data-node-id=foundations]:not(.detail-node) .spiral-title {font-size:16px}
+}
+@media(prefers-reduced-motion:reduce) {
+  .spiral-orb,.spiral-node {transition:none}
+}

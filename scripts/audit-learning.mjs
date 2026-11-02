@@ -1,0 +1,11 @@
+import fs from 'node:fs/promises';
+const catalog=await fs.readFile(new URL('../public/wikipedia-catalog.json',import.meta.url),'utf8');
+const learning=await fs.readFile(new URL('../public/wikipedia-learning.json',import.meta.url),'utf8');
+globalThis.fetch=async url=>new Response(String(url).includes('wikipedia-learning')?learning:catalog);
+const atlas=await import('../src/atlas-data.ts');
+const nav=await import('../src/dive-model.ts');
+const report={concepts:atlas.concepts.length-1,withEquations:atlas.concepts.filter(n=>n.formulas.length).length,groups:nav.diveEntries().filter(n=>n.browsingGroup).length,maxDepth:Math.max(...atlas.concepts.map(n=>nav.diveAncestors(n.id).length)),genericGroups:nav.diveEntries().filter(n=>n.browsingGroup&&/further|[A-Z]–[A-Z] topics|…/.test(n.title)).map(n=>n.title),branches:{}};
+for(const id of process.argv.slice(2))report.branches[id]=nav.diveChildren(id).map(n=>({id:n.id,title:n.title,formula:n.formulas[0]?.text,children:nav.diveChildren(n.id).map(child=>({id:child.id,title:child.title}))}));
+await fs.mkdir(new URL('../test-results/',import.meta.url),{recursive:true});
+await fs.writeFile(new URL('../test-results/learning-audit.json',import.meta.url),JSON.stringify(report,null,2));
+console.log(JSON.stringify(report,null,2));
