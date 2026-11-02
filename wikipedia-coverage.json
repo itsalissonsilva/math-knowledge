@@ -1,0 +1,478 @@
+{
+  "generatedAt": "2026-11-02T05:24:54.747Z",
+  "concepts": 7691,
+  "articleReferences": 152202,
+  "verifiedPages": 8066,
+  "includedMathPages": 7661,
+  "removedRedlinks": 402,
+  "repairedRedirectCycles": 1,
+  "sources": [
+    {
+      "article": "List of set theory topics",
+      "parentId": "sets",
+      "status": "read",
+      "added": 0
+    },
+    {
+      "article": "Outline of logic",
+      "parentId": "logic",
+      "status": "read",
+      "added": 516
+    },
+    {
+      "article": "List of mathematical logic topics",
+      "parentId": "logic",
+      "status": "read",
+      "added": 219
+    },
+    {
+      "article": "Outline of category theory",
+      "parentId": "categories",
+      "status": "read",
+      "added": 92
+    },
+    {
+      "article": "Type theory",
+      "parentId": "type-theory",
+      "status": "read",
+      "added": 11
+    },
+    {
+      "article": "Outline of algebra",
+      "parentId": "algebra",
+      "status": "read",
+      "added": 12
+    },
+    {
+      "article": "Outline of linear algebra",
+      "parentId": "linear-algebra",
+      "status": "read",
+      "added": 104
+    },
+    {
+      "article": "List of abstract algebra topics",
+      "parentId": "abstract-algebra",
+      "status": "read",
+      "added": 263
+    },
+    {
+      "article": "List of group theory topics",
+      "parentId": "groups",
+      "status": "read",
+      "added": 183
+    },
+    {
+      "article": "Glossary of ring theory",
+      "parentId": "rings",
+      "status": "read",
+      "added": 72
+    },
+    {
+      "article": "Glossary of field theory",
+      "parentId": "fields",
+      "status": "read",
+      "added": 29
+    },
+    {
+      "article": "List of representation theory topics",
+      "parentId": "representations",
+      "status": "read",
+      "added": 40
+    },
+    {
+      "article": "List of commutative algebra topics",
+      "parentId": "commutative-algebra",
+      "status": "read",
+      "added": 31
+    },
+    {
+      "article": "List of homological algebra topics",
+      "parentId": "homological-algebra",
+      "status": "read",
+      "added": 12
+    },
+    {
+      "article": "Outline of arithmetic",
+      "parentId": "arithmetic",
+      "status": "read",
+      "added": 54
+    },
+    {
+      "article": "List of number theory topics",
+      "parentId": "number",
+      "status": "read",
+      "added": 276
+    },
+    {
+      "article": "Prime number",
+      "parentId": "primes",
+      "status": "read",
+      "added": 9
+    },
+    {
+      "article": "List of algebraic number theory topics",
+      "parentId": "algebraic-number",
+      "status": "read",
+      "added": 40
+    },
+    {
+      "article": "Analytic number theory",
+      "parentId": "analytic-number",
+      "status": "read",
+      "added": 2
+    },
+    {
+      "article": "List of calculus topics",
+      "parentId": "calculus",
+      "status": "read",
+      "added": 71
+    },
+    {
+      "article": "List of real analysis topics",
+      "parentId": "real-analysis",
+      "status": "read",
+      "added": 136
+    },
+    {
+      "article": "List of complex analysis topics",
+      "parentId": "complex-analysis",
+      "status": "read",
+      "added": 98
+    },
+    {
+      "article": "List of functional analysis topics",
+      "parentId": "functional-analysis",
+      "status": "read",
+      "added": 125
+    },
+    {
+      "article": "List of harmonic analysis topics",
+      "parentId": "harmonic-analysis",
+      "status": "read",
+      "added": 42
+    },
+    {
+      "article": "Measure (mathematics)",
+      "parentId": "measure",
+      "status": "read",
+      "added": 7
+    },
+    {
+      "article": "List of named differential equations",
+      "parentId": "dynamics",
+      "status": "read",
+      "added": 190
+    },
+    {
+      "article": "List of dynamical systems and differential equations topics",
+      "parentId": "dynamical-systems",
+      "status": "read",
+      "added": 143
+    },
+    {
+      "article": "Mathematical physics",
+      "parentId": "math-physics",
+      "status": "read",
+      "added": 1
+    },
+    {
+      "article": "Outline of geometry",
+      "parentId": "geometry",
+      "status": "read",
+      "added": 272
+    },
+    {
+      "article": "List of differential geometry topics",
+      "parentId": "differential-geometry",
+      "status": "read",
+      "added": 207
+    },
+    {
+      "article": "List of algebraic geometry topics",
+      "parentId": "algebraic-geometry",
+      "status": "read",
+      "added": 158
+    },
+    {
+      "article": "List of topology topics",
+      "parentId": "topology",
+      "status": "read",
+      "added": 38
+    },
+    {
+      "article": "List of algebraic topology topics",
+      "parentId": "algebraic-topology",
+      "status": "read",
+      "added": 78
+    },
+    {
+      "article": "Glossary of Riemannian and metric geometry",
+      "parentId": "riemannian",
+      "status": "read",
+      "added": 60
+    },
+    {
+      "article": "Outline of discrete mathematics",
+      "parentId": "discrete",
+      "status": "read",
+      "added": 0
+    },
+    {
+      "article": "Outline of combinatorics",
+      "parentId": "combinatorics",
+      "status": "read",
+      "added": 73
+    },
+    {
+      "article": "List of graph theory topics",
+      "parentId": "graphs",
+      "status": "read",
+      "added": 237
+    },
+    {
+      "article": "List of order theory topics",
+      "parentId": "order-theory",
+      "status": "read",
+      "added": 85
+    },
+    {
+      "article": "Outline of probability",
+      "parentId": "probability",
+      "status": "read",
+      "added": 76
+    },
+    {
+      "article": "List of probability topics",
+      "parentId": "probability",
+      "status": "read",
+      "added": 241
+    },
+    {
+      "article": "List of probability distributions",
+      "parentId": "distributions",
+      "status": "read",
+      "added": 157
+    },
+    {
+      "article": "Stochastic process",
+      "parentId": "stochastic-processes",
+      "status": "read",
+      "added": 1
+    },
+    {
+      "article": "Outline of statistics",
+      "parentId": "statistics",
+      "status": "read",
+      "added": 124
+    },
+    {
+      "article": "List of statistics articles",
+      "parentId": "statistics",
+      "status": "read",
+      "added": 2176
+    },
+    {
+      "article": "Statistical inference",
+      "parentId": "inference",
+      "status": "read",
+      "added": 8
+    },
+    {
+      "article": "List of numerical analysis topics",
+      "parentId": "numerical",
+      "status": "read",
+      "added": 788
+    },
+    {
+      "article": "Theory of computation",
+      "parentId": "computation",
+      "status": "read",
+      "added": 7
+    },
+    {
+      "article": "Computational mathematics",
+      "parentId": "computation",
+      "status": "read",
+      "added": 13
+    },
+    {
+      "article": "Mathematical optimization",
+      "parentId": "optimization",
+      "status": "read",
+      "added": 13
+    },
+    {
+      "article": "Operations research",
+      "parentId": "operations-research",
+      "status": "read",
+      "added": 38
+    },
+    {
+      "article": "Information theory",
+      "parentId": "information-theory",
+      "status": "read",
+      "added": 9
+    },
+    {
+      "article": "Coding theory",
+      "parentId": "coding-theory",
+      "status": "read",
+      "added": 7
+    },
+    {
+      "article": "Cryptography",
+      "parentId": "cryptography",
+      "status": "read",
+      "added": 1
+    },
+    {
+      "article": "Glossary of graph theory",
+      "parentId": "graphs",
+      "status": "read",
+      "added": 97
+    },
+    {
+      "article": "Glossary of general topology",
+      "parentId": "topology",
+      "status": "read",
+      "added": 85
+    },
+    {
+      "article": "Glossary of algebraic topology",
+      "parentId": "algebraic-topology",
+      "status": "read",
+      "added": 195
+    },
+    {
+      "article": "Glossary of algebraic geometry",
+      "parentId": "algebraic-geometry",
+      "status": "read",
+      "added": 115
+    },
+    {
+      "article": "Glossary of linear algebra",
+      "parentId": "linear-algebra",
+      "status": "read",
+      "added": 28
+    },
+    {
+      "article": "Glossary of functional analysis",
+      "parentId": "functional-analysis",
+      "status": "read",
+      "added": 33
+    },
+    {
+      "article": "Glossary of number theory",
+      "parentId": "number",
+      "status": "read",
+      "added": 20
+    }
+  ],
+  "missing": [
+    "outline of theoretical computer science",
+    "continuous-categorical distribution",
+    "magma object",
+    "riesz decomposition",
+    "meet-dense set",
+    "prime element (order theory)",
+    "irreducible element (order theory)",
+    "maximum-cardinality search",
+    "differential module",
+    "eilenberg–wojdysławski theorem",
+    "perfect order",
+    "graph triangulation",
+    "double centralizer",
+    "list of ring theory topics",
+    "witt space",
+    "tate sphere",
+    "spivak normal fibration",
+    "serre class",
+    "resolution (topology)",
+    "borel regulator",
+    "rational homology manifold",
+    "special divsor",
+    "grothendieck's vanishing theorem",
+    "grothendieck ring of varieties",
+    "pullback (topology)",
+    "profinite homotopy theory",
+    "pl space",
+    "path lifting function",
+    "p-adic homotopy theory",
+    "pair (algebraic topology)",
+    "orbibundle",
+    "nilpotent theorem",
+    "revising opinions in statistics",
+    "properties of discretization schemes",
+    "g space",
+    "nafems",
+    "mafelap",
+    "epidata",
+    "c-monoid",
+    "strict logic",
+    "spatial logic",
+    "ideal completion",
+    "imperfect degree",
+    "l-class (mathematics)",
+    "kirby–siebenmann classification",
+    "intersection pairing",
+    "g-space",
+    "cotolerant sequence",
+    "path analysis (paths and cycles)",
+    "octagon of prophecies",
+    "mie phase function",
+    "henyey–greenstein phase function",
+    "skew elliptical distribution",
+    "polya–eggenberger distribution",
+    "topological computing",
+    "tensor eigenvalue",
+    "list of prime number topics",
+    "list of mathematical physics topics",
+    "transiogram",
+    "hierarchical control",
+    "0-1 test for chaos",
+    "chaos argument",
+    "subrecursion theory",
+    "maximal subring",
+    "algebra generated by a set",
+    "list of analytic number theory topics",
+    "dominate (topology)",
+    "disjoint disk property",
+    "deligne–beilinson cohomology",
+    "g-covering",
+    "continuous cohomology",
+    "atiyah duality",
+    "poker probability (texas hold 'em)",
+    "poker probability (omaha)",
+    "weinstein theorem",
+    "morse index theorem",
+    "generating set (universal algebra)",
+    "period conjecture",
+    "stone lemma",
+    "skew t distribution",
+    "pearson type iv distribution",
+    "map-airy distribution",
+    "gamma-difference distribution",
+    "expectile distribution",
+    "centralized inverse-fano distribution",
+    "phased bi-weibull distribution",
+    "phased bi-exponential distribution",
+    "centroid (graph theory)",
+    "positional tree"
+  ],
+  "disambiguations": [
+    "double exponential distribution",
+    "limit theorem",
+    "q-statistic",
+    "q test",
+    "mean deviation",
+    "lambda distribution",
+    "markovian",
+    "t distribution",
+    "path space",
+    "enveloping algebra",
+    "probability plot",
+    "energy statistics",
+    "simplicial category",
+    "analysis situs"
+  ]
+}
