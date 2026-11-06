@@ -64,6 +64,11 @@ for(const[id,definition]of Object.entries(definitions)){
   const render=tex=>katex.renderToString(tex,{output:'mathml',displayMode:false,throwOnError:true,trust:false,strict:'ignore'});
   formulas[id]={text:definition.text,condition:definition.condition,mathml:render(definition.tex),...(definition.previewTex?{previewMathml:render(definition.previewTex)}:{})};
 }
-const result={subjects,formulas};
-await fs.writeFile(new URL('public/wikipedia-learning.json',root),JSON.stringify(result));
+const learningFile=new URL('public/wikipedia-learning.json',root);
+const previous=await fs.readFile(learningFile,'utf8').then(JSON.parse,error=>{
+  if(error.code==='ENOENT')return {};
+  throw error;
+});
+const result={subjects,formulas,...(previous.lists&&{lists:previous.lists})};
+await fs.writeFile(learningFile,JSON.stringify(result));
 console.log(JSON.stringify({subjects:Object.keys(subjects).length,sourceEquations:Object.keys(formulas).length,bytes:JSON.stringify(result).length}));

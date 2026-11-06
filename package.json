@@ -10,7 +10,8 @@
     "test": "node --experimental-strip-types --test tests/*.test.ts",
     "index:wikipedia": "node --experimental-strip-types scripts/build-wikipedia.mjs",
     "index:learning": "node --experimental-strip-types scripts/build-learning-index.mjs",
-    "index:descriptions": "node scripts/refresh-descriptions.mjs"
+    "index:descriptions": "node scripts/refresh-descriptions.mjs",
+    "index:lists": "node scripts/build-list-index.mjs"
   },
   "dependencies": {
     "@types/katex": "0.16.8",

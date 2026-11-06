@@ -3,6 +3,7 @@ import {ArrowLeft,ArrowRight,ArrowUpRight,BookOpen,ChevronRight,Info,Moon,Search
 import ExplorerGraph,{type GraphRequest} from './ExplorerGraph';
 import MathExpression from './MathExpression';
 import {diveAncestors,getDiveNode} from './dive-model';
+import {validPath} from './dive-scene';
 import {articleUrl,byId,colors,concepts,connections,search,sourceOutlines,type Concept,type Relation} from './atlas-data';
 
 function routeId(){try{const id=decodeURIComponent(location.hash.replace(/^#\/?/,''));return getDiveNode(id)?id:'mathematics';}catch{return 'mathematics';}}
@@ -29,7 +30,7 @@ function Notes({id,onClose,onNavigate,onConnections}:{id:string;onClose:()=>void
     <div className="notes-scroll" ref={scroll}>
       <h1>{node.title}</h1>
       <p className="note-summary">{node.origin==='wikipedia'?'“'+node.summary+'”':node.summary}</p>
-      {node.origin==='wikipedia'&&<a className="excerpt-credit" href={articleUrl(node)} target="_blank" rel="noreferrer">Wikipedia · CC BY-SA <ArrowUpRight size={10}/></a>}
+      {(node.origin==='wikipedia'||node.origin==='list')&&<a className="excerpt-credit" href={articleUrl(node)} target="_blank" rel="noreferrer">Wikipedia · CC BY-SA <ArrowUpRight size={10}/></a>}
       <Formula node={node}/>
       {node.example&&<section className="note-section"><h2>Example</h2><p>{node.example}</p></section>}
       {!!bridges.length&&<section className="note-section"><h2>Related ideas</h2>{bridges.map((edge,i)=><div className="learning-bridge" key={i}><button onClick={()=>onNavigate(other(edge).id)}>{other(edge).title}<ChevronRight size={12}/></button><p>{edge.label}</p></div>)}</section>}
@@ -51,7 +52,7 @@ export default function AtlasApp(){
   const focus=getDiveNode(focusId)!,trail=trailIds.slice(1).map(id=>getDiveNode(id)!).filter(Boolean),results=useMemo(()=>search(query),[query]);
   const sources=[...new Map(sourceOutlines.map(source=>[source.article,source])).values()];
   useEffect(()=>{document.documentElement.dataset.theme=theme;document.querySelector('meta[name="theme-color"]')?.setAttribute('content',theme==='dark'?'#1b211c':'#fafbf7');try{localStorage.setItem('mom-theme',theme);}catch{}},[theme]);
-  useEffect(()=>{const pop=()=>{const id=routeId(),stored=history.state?.mathTrail,path=Array.isArray(stored)&&stored.every((part:string)=>!!getDiveNode(part))?stored:diveAncestors(id).map(node=>node.id);setFocusId(id);setTrailIds(path);setReadingId(null);setGraphRequest(current=>({id,kind:'reveal',path,serial:current.serial+1}));setSearchOpen(false);};window.addEventListener('popstate',pop);window.addEventListener('hashchange',pop);return()=>{window.removeEventListener('popstate',pop);window.removeEventListener('hashchange',pop);};},[]);
+  useEffect(()=>{const pop=()=>{const id=routeId(),stored=history.state?.mathTrail,path=validPath(Array.isArray(stored)?stored:undefined,id)??diveAncestors(id).map(node=>node.id);setFocusId(id);setTrailIds(path);setReadingId(null);setGraphRequest(current=>({id,kind:'reveal',path,serial:current.serial+1}));setSearchOpen(false);};window.addEventListener('popstate',pop);window.addEventListener('hashchange',pop);return()=>{window.removeEventListener('popstate',pop);window.removeEventListener('hashchange',pop);};},[]);
   useEffect(()=>{const keys=(event:KeyboardEvent)=>{if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==='k'){event.preventDefault();setSearchOpen(v=>!v);setGuide(false);}if(event.key==='Escape'){setSearchOpen(false);setGuide(false);setReadingId(null);}};window.addEventListener('keydown',keys);return()=>window.removeEventListener('keydown',keys);},[]);
   useEffect(()=>{
     if(!searchOpen&&!guide)return;

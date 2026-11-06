@@ -53,6 +53,45 @@ test('distance branches show their own typeset definitions, examples, and metric
   assert.ok(nav.diveAncestors('wp-imaginary-unit').some(n=>n.id==='complex'));
 });
 
+test('calculus opens into its main subjects and related examples have precise homes',()=>{
+  assert.deepEqual(nav.diveChildren('calculus').map(node=>node.id),[
+    'single-variable','multivariable','vector-calculus','calculus-variations',
+  ]);
+  assert.deepEqual(nav.diveChildren('single-variable').map(node=>node.id),[
+    'limits','derivatives','integrals','series',
+  ]);
+  for(const [child,parent] of [
+    ['wp-table-of-limits','limits'],['wp-natural-logarithm','logarithms'],
+    ['wp-gabriel-s-horn','improper-integrals'],['wp-gauss-hermite-quadrature','wp-gaussian-quadrature'],
+    ['wp-gaussian-quadrature','numerical-integration'],['wp-heston-model','stochastic-de'],
+    ['wp-chain-algebraic-topology','homology'],['wp-topological-abelian-group','wp-topological-group'],
+  ]){
+    const path=nav.diveAncestors(child).map(node=>node.id);
+    assert.ok(path.includes(parent),child+' should be under '+parent);
+    assert.deepEqual(scene.validPath(path,child),path);
+  }
+  assert.equal(scene.validPath(['mathematics','analysis','calculus','wp-table-of-limits'],'wp-table-of-limits'),null);
+});
+
+test('reference lists reveal source entries through the normal graph paths',()=>{
+  const leaves=(id:string):ReturnType<typeof nav.diveChildren>=>{
+    const children=nav.diveChildren(id);
+    return children.length?children.flatMap(node=>leaves(node.id)):[nav.getDiveNode(id)!];
+  };
+  for(const id of Object.keys(atlas.wikipediaLists))assert.ok(nav.diveChildren(id).length,id);
+  assert.ok(nav.diveChildren('wp-table-of-limits').some(node=>node.title==='Limits of elementary functions'));
+  const sineLimit=leaves('wp-table-of-limits').find(node=>node.formulas[0]?.text.includes('\\frac{\\sin x}{x} = 1'));
+  assert.ok(sineLimit?.formulas[0].mathml?.includes('<math'));
+  const path=nav.diveAncestors(sineLimit.id).map(node=>node.id);
+  assert.ok(path.includes('wp-table-of-limits'));
+  assert.ok(scene.buildScene(scene.includePath([],path)).nodes.has(scene.pathKey(path)));
+  assert.ok(leaves('wp-table-of-integrals').some(node=>node.wiki.startsWith('List of integrals of rational functions#')&&node.formulas[0]?.mathml));
+  const divisors=leaves('wp-table-of-divisors');
+  assert.equal(divisors.length,1000);
+  assert.match(divisors.find(node=>node.title==='12')!.summary,/1, 2, 3, 4, 6, 12/);
+  assert.ok(leaves('wp-alternative-set-theory').some(node=>node.title==='Morse–Kelley set theory'));
+});
+
 test('subject branches have meaningful distinct labels instead of alphabetic or unnamed overflow buckets',()=>{
   for(const node of nav.diveEntries()){
     if(node.browsingGroup)assert.ok(!/further concepts|further .*ideas|^[A-Z][–-][A-Z] topics|…/i.test(node.title),node.title);

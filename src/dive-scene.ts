@@ -39,6 +39,11 @@ export function buildScene(stages:Stage[],compact=false){
   return {nodes,edges};
 }
 export function validPath(path:DivePath|undefined,id:string){
-  if(path?.[0]==='mathematics'&&path[path.length-1]===id&&path.every(part=>!!getDiveNode(part)))return path;
-  return null;
+  if(path?.[0]!=='mathematics'||path.at(-1)!==id)return null;
+  for(let index=1;index<path.length;index++){
+    const parent=getDiveNode(path[index-1]),child=getDiveNode(path[index]);
+    if(!parent||!child)return null;
+    if(!parent.children.includes(child.id)&&child.id!=='r/'+parent.sourceId)return null;
+  }
+  return path;
 }

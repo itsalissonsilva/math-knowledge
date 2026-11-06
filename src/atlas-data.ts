@@ -6,10 +6,24 @@ type RawConcept=Pick<Concept,'id'|'title'|'wiki'|'summary'|'parentId'> & Partial
 interface Snapshot {entries:RawConcept[];links:Array<[number,number,number,string?]>;sources:Array<{article:string;parentId:string;status:string;added?:number}>;pages:Array<{title:string;pageid:number;revision:number;url:string;excerpt:string}>;generatedAt:string}
 const [response,learningResponse]=await Promise.all([fetch('/wikipedia-catalog.json'),fetch('/wikipedia-learning.json')]);
 if(!response.ok||!learningResponse.ok)throw new Error(`The mathematics index could not load (${!response.ok?response.status:learningResponse.status}).`);
-const [wikiData,learningIndex]=await Promise.all([response.json() as Promise<Snapshot>,learningResponse.json() as Promise<{subjects:Record<string,{categories:string[];links:string[]}>;formulas:Record<string,Formula>}>]);
+interface LearningIndex {
+  subjects:Record<string,{categories:string[];links:string[]}>;
+  formulas:Record<string,Formula>;
+  lists?:Record<string,WikipediaListEntry[]>;
+}
+const [wikiData,learningIndex]=await Promise.all([response.json() as Promise<Snapshot>,learningResponse.json() as Promise<LearningIndex>]);
 export const subjectMetadata=learningIndex.subjects;
+export const wikipediaLists=learningIndex.lists??{};
 
 export interface Formula { text:string; condition:string; mathml?:string; previewMathml?:string; sourceSection?:string; sourceRevision?:number }
+export interface WikipediaListEntry {
+  title:string;
+  wiki:string;
+  concept?:string;
+  summary?:string;
+  formula?:Formula;
+  children?:WikipediaListEntry[];
+}
 export interface Concept {
   id:string; title:string; wiki:string; summary:string; parentId:string|null;
   origin:string; sourceOutline?:string; sourceSection?:string; sourceTitle?:string; sourceFallback?:boolean;
@@ -25,7 +39,12 @@ export const symbols:Record<string,string>={foundations:'∀',algebra:'𝑥',ana
 const decode=(s:string)=>{try{return decodeURIComponent(s);}catch{return s;}};
 const normalized=(s:string)=>decode(s).toLowerCase().replaceAll('_',' ').replaceAll('’',"'");
 const byLessonWiki=new Map(originalLessons.map(t=>[normalized(t.wiki),t]));
-export const concepts:Concept[]=wikiData.entries.map(e=>{
+export const concepts:Concept[]=wikiData.entries.map(entry=>{
+  // This redirect lands on a history of the web. The relevant source is the PrimePages entry.
+  const e=entry.id==='wp-prime-pages'&&entry.wiki==='List_of_websites_founded_before_1995'
+    ? {...entry,title:'PrimePages',wiki:entry.wiki+'#PrimePages',
+        summary:'PrimePages is a website about prime numbers originally created by Chris Caldwell at the University of Tennessee at Martin.'}
+    : entry;
   const lesson=byLessonWiki.get(normalized(e.wiki as string))??originalLessons.find(t=>t.id===e.id);
   const annotation=formulaLibrary[e.id];
   const formula=annotation?.text||(e.formula as string|undefined)||lesson?.formula;

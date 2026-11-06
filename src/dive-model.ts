@@ -1,4 +1,4 @@
-import {byId,concepts,connections,domainOrder,type Concept,type Formula} from './atlas-data.ts';
+import {byId,concepts,connections,domainOrder,wikipediaLists,type Concept,type Formula,type WikipediaListEntry} from './atlas-data.ts';
 import {semanticBuckets,subjectLabel} from './semantic-branches.ts';
 import {subjectRules} from './subject-rules.ts';
 import {navigationOwner,navigationChildren} from './navigation-ownership.ts';
@@ -74,11 +74,6 @@ const rules:Record<string,Rule[]>={
     {title:'Rank & decompositions',match:/rank|decomposition/i},
     {title:'Determinants & invariants',match:/determinant|trace|adjugate|pfaffian|polynomial/i},
     {title:'Matrix theorems & structure',match:/.*/}],
-  calculus:[
-    {title:'Single-variable calculus',match:/single.variable|logarithm|hyperbolic|limit/i},
-    {title:'Multivariable & vector calculus',match:/multivariable|vector/i},
-    {title:'Integration & approximation',match:/integr|sum|simpson|quadrature|newton.cotes|horn|method/i},
-    {title:'Differential methods & variations',match:/.*/}],
   'differential-geometry':[
     {title:'Curves & surfaces',match:/curve|surface|winding|envelope|sine.gordon|liouville|tzitzeica/i},
     {title:'Manifolds & tangent spaces',match:/manifold|tangent|jet|bundle|hypercomplex|calabi|k3|stein/i},
@@ -145,7 +140,52 @@ function organize(parent:DiveNode,ids:string[],prefix:string,primary:boolean,all
   });
   attach(parent,groupIds,primary);
 }
-for(const node of concepts){const copy=registry.get(node.id)!;if(node.id==='mathematics')copy.children=originalChildren(node.id);else organize(copy,originalChildren(node.id),'v/'+node.id,true);}
+function addListBranch(parent:DiveNode,entry:WikipediaListEntry,id:string):DiveNode {
+  const original=entry.concept?byId[entry.concept]:undefined;
+  const entries=entry.children??[];
+  const article=entry.wiki.split('#')[0].replaceAll('_',' ');
+  const branch:DiveNode={
+    id,
+    title:entry.title,
+    wiki:entry.wiki,
+    summary:entry.summary??original?.summary??'Browse the corresponding entry in '+article+'.',
+    parentId:parent.id,
+    origin:'list',
+    sourceId:original?.id??id,
+    domain:parent.domain,
+    depth:parent.depth+1,
+    descendants:0,
+    children:[],
+    browsingGroup:entries.length>0,
+    level:entries.length?'List section':'List entry',
+    formulas:entry.formula?[entry.formula]:original?.formulas??[],
+  };
+  registry.set(id,branch);
+  for(const [index,child] of entries.entries()){
+    const next=addListBranch(branch,child,id+'/'+(index+1));
+    branch.children.push(next.id);
+    branch.descendants+=1+next.descendants;
+  }
+  return branch;
+}
+
+for(const node of concepts){
+  const copy=registry.get(node.id)!;
+  const children=originalChildren(node.id);
+  const list=wikipediaLists[node.id];
+  if(list?.length){
+    const prefix='list/'+node.id;
+    if(children.length){
+      const contents=addListBranch(copy,{title:'List contents',wiki:node.wiki,children:list},prefix);
+      const related=registerGroup('v/'+node.id+'.related',copy,'Related topics',children);
+      organize(related,children,related.id,true);
+      copy.children=[contents.id,related.id];
+    }else{
+      copy.children=list.map((entry,index)=>addListBranch(copy,entry,prefix+'/'+(index+1)).id);
+    }
+  }else if(node.id==='mathematics')copy.children=children;
+  else organize(copy,children,'v/'+node.id,true);
+}
 for(const node of registry.values())if(!node.browsingGroup&&!node.formulas.length&&node.children.length){const formulas=representative(originalChildren(node.id));if(formulas.length)node.formulas=formulas;}
 const referenceRoots=new Map<string,string>();
 export function referenceNode(id:string){

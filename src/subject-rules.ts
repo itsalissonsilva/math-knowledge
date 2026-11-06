@@ -3,6 +3,30 @@
 type Rule={title:string;match:RegExp};
 const themes=(...rows:Array<[string,RegExp]>):Rule[]=>rows.map(([title,match])=>({title,match:new RegExp(match.source,'i')}));
 export const subjectRules:Record<string,Rule[]>={
+  limits:themes(
+    ['Limit definitions & methods',/epsilon|one-sided|squeeze|indeterminate|difference quotient/],
+    ['Continuity & value theorems',/continuous|continuity|value theorem/],
+    ['Limit tables',/.*/]),
+  derivatives:themes(
+    ['Rules & notation',/rule|notation|implicit|logarithmic|differential \(/],
+    ['Local & higher derivatives',/approxim|lineariz|higher|second|flat function|differential of|operator/],
+    ['Extrema & related rates',/stationary|critical|rates|first.derivative test|fermat/],
+    ['Differentiability theorems',/.*/]),
+  integrals:themes(
+    ['Improper integrals',/^improper integrals$/],
+    ['Geometric applications',/arc length|solid of revolution|mechanical theorems/],
+    ['Definite integrals & their definitions',/riemann|darboux|fundamental theorem/],
+    ['Antiderivatives & integration methods',/.*/]),
+  multivariable:themes(
+    ['Differential operators',/partial|directional|gradient|jacobian|hessian/],
+    ['Multiple integrals',/^multiple integrals$/],
+    ['Changes of variables',/change of variables/],
+    ['Implicit functions & other theorems',/.*/]),
+  series:themes(
+    ['Sequences & progressions',/sequence|progression/],
+    ['Convergence & divergence',/converg|diverg|oscillat/],
+    ['Power series',/^power series$/],
+    ['Series operations & summation',/.*/]),
   'real-analysis':themes(['Limits & convergence',/converg|sequence|infinite product/],['Completeness & compactness',/complete|cauchy|bolzano|heine|0\.999/],['Functions & regularity',/function|darboux/],['Series & fixed points',/.*/]),
   'metric-geometry':themes(['Distances & metric spaces',/metric|distance|ball|contraction/],['Curves & parametrization',/curve|parametric/],['Geometric integration',/integral/],['Maps & geometric structure',/.*/]),
   euclidean:themes(['Points, lines & coordinates',/point|line|angle|coordinate|dimension|intersection|position|plane|distance/],['Triangles, circles & polygons',/triangle|circle|polygon|quadrilateral|trigonometr|conic|pythagor/],['Solids & measurement',/solid|volume|area|length|perimeter|polyhed|sphere|cone|prism|cylinder/],['Transformations & geometric structure',/.*/]),
